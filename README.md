@@ -1,4 +1,5 @@
-# Bachelor Project: \\Anomaly Detection Techniques for Cyclist Curb Recognition
+# Bachelor Project: 
+# Anomaly Detection Techniques for Cyclist Curb Recognition
 
 ## General Information
 
