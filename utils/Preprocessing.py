@@ -33,3 +33,33 @@ def combine_activities(df_one, df_two, output_path):
     df_combined.to_csv(output_path, index=False)
     
     return df_combined
+
+def handle_missing_values_length(df_filtered):
+    # Handle missing values length
+    missing_info = {}  # List to store (start_index, current_count)
+    current_count = 0
+    start_index = None  # To store the start time of missing values
+    for index, row in df_filtered.iterrows():
+        if np.isnan(row['Acc-Z']):
+            if start_index is None:
+                start_index = index
+                current_count += 1
+            if start_index is not None:
+                current_count += 1
+        # If the value is not NaN, continue sequence broke
+        else:
+            if start_index is not None:
+                missing_info[start_index] = current_count
+                start_index = None
+                current_count = 0
+    # Handle case where the last segment has missing values
+    if current_count > 0:
+        missing_info[start_index] = current_count
+
+    for key, value in missing_info.items():
+        print(key, value)
+        if value > 100:
+            print("Start Index:", key, "Count:", value)
+
+    print(missing_info)
+    return missing_info
