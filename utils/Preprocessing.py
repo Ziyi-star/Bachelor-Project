@@ -34,32 +34,60 @@ def combine_activities(df_one, df_two, output_path):
     
     return df_combined
 
-def handle_missing_values_length(df_filtered):
-    # Handle missing values length
-    missing_info = {}  # List to store (start_index, current_count)
+def handle_missing_values_length_index(df_filtered):
+    """
+    Identifies consecutive missing values (NaNs) in the 'Acc-Z' column 
+    and checks if any consecutive sequence exceeds 100 samples.
+
+    Parameters
+    ----------
+    df_filtered : pandas.DataFrame
+        The input DataFrame with a column named 'Acc-Z'.
+
+    Returns
+    -------
+    missing_info : dict
+        A dictionary where:
+        - Key is the start index of the missing-value sequence.
+        - Value is the length of that missing-value sequence.
+    """
+    # Dictionary to store consecutive missing info (start_index: count_of_missing)
+    missing_info = {}
     current_count = 0
-    start_index = None  # To store the start time of missing values
+    missing_value_flag = False
+    # Will store the first index of a missing-values sequence (None means we're currently not in a missing sequence)
+    start_index = None
+
+    # Iterate over each row in df_filtered
     for index, row in df_filtered.iterrows():
+        # Check if 'Acc-Z' is NaN
         if np.isnan(row['Acc-Z']):
+            # If this is the first missing in a new sequence, record the start index
             if start_index is None:
                 start_index = index
+                # Start counting from 1 for this missing value
                 current_count += 1
-            if start_index is not None:
+            else:
+                # If we're already tracking a missing sequence, just increment
                 current_count += 1
-        # If the value is not NaN, continue sequence broke
         else:
+            # If 'Acc-Z' is not NaN so that the missing sequence broke
             if start_index is not None:
+                # Store start_index -> length_of_missing_sequence in the dictionary
                 missing_info[start_index] = current_count
+                # Reset to indicate we're no longer in a missing sequence
                 start_index = None
                 current_count = 0
-    # Handle case where the last segment has missing values
+    # Handle case where the last samples in df_filtered are missing
+    # (Because if the loop ends while still in a missing sequence, it's not recorded yet)
     if current_count > 0:
         missing_info[start_index] = current_count
-
+    # Print sequences longer than 100 missing values (twice for demonstration)
     for key, value in missing_info.items():
-        print(key, value)
         if value > 100:
             print("Start Index:", key, "Count:", value)
-
-    print(missing_info)
+            missing_value_flag = True
+    # If no sequences are longer than 100, print a message
+    if not missing_value_flag:
+        print("No missing values longer than 100")
     return missing_info
