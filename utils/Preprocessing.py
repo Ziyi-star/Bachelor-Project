@@ -22,7 +22,6 @@ def combine_activities(df_one, df_two, output_path):
     return df_combined
 
     
-
 def handle_missing_values_length_index(df_filtered):
     """
     Identifies consecutive missing values (NaNs) in the 'Acc-Z' column 
