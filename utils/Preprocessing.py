@@ -1,5 +1,4 @@
 import pandas as pd  
-import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.dates as mdates
 
@@ -9,9 +8,9 @@ def combine_activities(df_one, df_two, output_path):
     #curb_activity: 1.0 is cross down, 0.0 is cross up, curb_type: 1.0 is curb, 2.0 is ramp, 3.0 is transition stone
     # cross curb down
     activity_one = df_one[(df_one['curb_activity'] == 1.0) &(df_one['curb_type_down'] == 1.0)]
-    #cross curb up 
+    # cross curb up 
     activity_two = df_two[(df_two['curb_activity'] == 0.0) & (df_two['curb_type_up'] == 1.0)]
-    #cross ramp down
+    # cross ramp down
     activity_three = df_two[(df_two['curb_activity'] == 1.0) & (df_two['curb_type_down'] == 2.0)]
     # Combine the selected data
     df_combined = pd.concat([activity_one, activity_two,activity_three], ignore_index=True)
@@ -83,13 +82,10 @@ def handle_missing_values_length_index(df_filtered):
 
 #not working because NTP IS NAN 
 def handle_missing_values_time_diff(df_filtered, time_threshold=0.5):
-
     missing_info = {}               # {start_time: time_diff}
     missing_value_flag = False      # Tracks if any sequence exceeded threshold
-    
     start_time = None     # Time when we first encounter a missing value
     last_time = None      # Most recent time in the current missing sequence
-
     # Sort the DataFrame by time just in case
     df_filtered = df_filtered.sort_values('NTP')
 
