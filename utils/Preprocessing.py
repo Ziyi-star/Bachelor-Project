@@ -143,4 +143,41 @@ def fill_missing_values(df,output_path):
     df.to_csv(output_path, index=False)
 
 
+def down_sampling(data, frequency):
+    time_shift = 1 / frequency  # s
+    # exchange time shift to unix time in ms
+    time_shift = time_shift*1000
+    # print('time interval',time_shift)
+    sampled_data = []
+
+    ts = 'Timestamp_unix'
+    # print('data',data)
+    sampled_data.append(data.iloc[0])
+    last_source_data = data.iloc[0]
+    nex_timestamp = data[ts][0] + time_shift
+    # print(data[ts][0])
+
+    for i in range(1, data.shape[0]):
+        # print('current timestamp', data['Timestamp_unix'][i])
+        # print(data['Timestamp_unix'][i] - last_source_data['Timestamp_unix'])
+        # if the gap between two consecutive time is larger than 2s, take the next sample
+        if (data[ts][i] - last_source_data[ts]) > 2000.0:
+            # print('current timestamp', data['Timestamp_unix'][i])
+            # print('last source timestamp', last_source_data['Timestamp_unix'])
+            nex_timestamp = data[ts][i] + time_shift
+            # append the current data to sampled data
+            sampled_data.append(data.iloc[i,])
+
+        if data[ts][i] > nex_timestamp:
+            nex_timestamp += time_shift
+            # append the current data to sampled data
+            sampled_data.append(data.iloc[i,])
+        last_source_data = data.iloc[i,]
+
+    sampled_data = pd.DataFrame(np.array(sampled_data), columns=(data.columns))
+    # print('time interval median',sampled_data[[ts]].diff())
+    # print('after sampling',sampled_data.shape)
+
+    return sampled_data
+
 
