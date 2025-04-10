@@ -3,6 +3,8 @@
 *.dat
 *.xlsx
 *.xls
+*.json
+*.xml
 
 # Jupyter Notebook
 .ipynb_checkpoints
@@ -29,12 +31,15 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+*.pyo
+*.pyd
 
 # Virtual Environment
 venv/
 ENV/
 env/
 .env
+*.venv
 
 # IDE specific files
 .idea/
@@ -42,6 +47,36 @@ env/
 *.swp
 *.swo
 .DS_Store
+*.code-workspace
 
 # Log files
 *.log
+*.out
+*.err
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Test and coverage reports
+.coverage
+*.cover
+*.py,cover
+.hypothesis/
+.tox/
+.nox/
+.cache/
+pytest_cache/
+nosetests.xml
+coverage.xml
+*.coveragerc
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.old
+*.orig
+*.rej
