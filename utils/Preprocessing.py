@@ -22,22 +22,6 @@ def combine_activities(df_one, df_two, output_path):
 
     
 def handle_missing_values_length_index(df_filtered):
-    """
-    Identifies consecutive missing values (NaNs) in the 'Acc-Z' column 
-    and checks if any consecutive sequence exceeds 100 samples.
-
-    Parameters
-    ----------
-    df_filtered : pandas.DataFrame
-        The input DataFrame with a column named 'Acc-Z'.
-
-    Returns
-    -------
-    missing_info : dict
-        A dictionary where:
-        - Key is the start index of the missing-value sequence.
-        - Value is the length of that missing-value sequence.
-    """
     # Dictionary to store consecutive missing info (start_index: count_of_missing)
     missing_info = {}
     current_count = 0
