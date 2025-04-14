@@ -80,7 +80,12 @@ def segment_acceleration_data_overlapping_count_index(df,overlap):
                 break
             acc_z_values = segment['Acc-Z'].values
             curb_scene_value = segment['curb_scene'].iloc[0]
-            data = {'curb_scene': curb_scene_value}
+            start_time = segment['NTP'].iloc[0]
+            end_time = segment['NTP'].iloc[-1]
+            # start_time, end time
+            data = {'curb_scene': curb_scene_value,
+                    'start_time': start_time,
+                    'end_time': end_time}
             for j, value in enumerate(acc_z_values):
                 data[f'Acc-Z_{j+1}'] = value
             new_df = pd.DataFrame([data])
