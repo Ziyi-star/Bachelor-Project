@@ -67,7 +67,7 @@ def segment_acceleration_data_no_overlapping_time_diff(df,output):
     return final_df
 
 # segments with/without overlapping with index
-def segment_acceleration_data_overlapping_count_index(df,overlap):
+def segment_acceleration_data_overlapping_count_index(df,overlap, output):
     processed_segments = []
     step_size = 100 - overlap
     grouped = df.groupby('curb_scene')
@@ -92,7 +92,7 @@ def segment_acceleration_data_overlapping_count_index(df,overlap):
             processed_segments.append(new_df)
     final_df = pd.concat(processed_segments)
     # Save the final DataFrame to a CSV file
-    final_df.to_csv('processed_segments_overlap.csv')
+    final_df.to_csv(output, index=False)
     return final_df
 
 # segement with time overlapping not tested

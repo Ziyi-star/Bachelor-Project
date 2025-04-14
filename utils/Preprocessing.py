@@ -9,11 +9,12 @@ def combine_activities(df_one, df_two, output_path):
     # cross curb down
     activity_one = df_one[(df_one['curb_activity'] == 1.0) &(df_one['curb_type_down'] == 1.0)]
     # cross curb up 
-    activity_two = df_two[(df_two['curb_activity'] == 0.0) & (df_two['curb_type_up'] == 1.0)]
+    # activity_two = df_two[(df_two['curb_activity'] == 0.0) & (df_two['curb_type_up'] == 1.0)]
     # cross ramp down
     activity_three = df_two[(df_two['curb_activity'] == 1.0) & (df_two['curb_type_down'] == 2.0)]
     # Combine the selected data
-    df_combined = pd.concat([activity_one, activity_two,activity_three], ignore_index=True)
+    #df_combined = pd.concat([activity_one, activity_two,activity_three], ignore_index=True)
+    df_combined = pd.concat([activity_one,activity_three], ignore_index=True)
     # Sort by timestamp and reset index
     df_combined = df_combined.sort_values('NTP').reset_index(drop=True)
     # Save the combined DataFrame
