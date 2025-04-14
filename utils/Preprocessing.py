@@ -126,7 +126,7 @@ def fill_missing_values(df,output_path):
                         break
     df.to_csv(output_path, index=False)
 
-
+#from Dandan and no idea what it does
 def down_sampling(data, frequency):
     time_shift = 1 / frequency  # s
     # exchange time shift to unix time in ms
