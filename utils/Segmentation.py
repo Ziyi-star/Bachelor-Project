@@ -139,3 +139,45 @@ def segment_acceleration_data_with_time_overlap_time_diff(df, segment_duration='
     # Save the final DataFrame to a CSV file
     final_df.to_csv('processed_segments_with_time_overlap.csv', index=False)
     return final_df
+
+
+def segment_acceleration_data_curb_height(df,overlap, output):
+    """
+    Segments acceleration data based on curb height with overlapping windows.
+    
+    Parameters:
+    -----------
+    df : pandas.DataFrame
+        Input DataFrame containing 'NTP', 'Acc-Z', and 'curb_height' columns
+    overlap : int
+        Number of samples to overlap between consecutive segments (0-99)
+    output : str
+        Path to save the segmented data as CSV file
+        
+    Returns:
+    --------
+    pandas.DataFrame
+        Segmented data with 100 acceleration points per segment and curb height
+    """
+    processed_segments = []
+    step_size = 100 - overlap
+    grouped = df.groupby('curb_height')
+    for name, group in grouped:
+        group = group.sort_values(by='NTP')
+        # Split the groupmembers into many segments of 100 samples
+        for i in range(0, len(group), step_size):
+            segment = group.iloc[i:i+100]
+            if len(segment) < 100:
+                break
+            acc_z_values = segment['Acc-Z'].values
+            curb_height_value = segment['curb_height'].iloc[0]
+            # start_time, end time
+            data = {'curb_height': curb_height_value}
+            for j, value in enumerate(acc_z_values):
+                data[f'Acc-Z_{j+1}'] = value
+            new_df = pd.DataFrame([data])
+            processed_segments.append(new_df)
+    final_df = pd.concat(processed_segments)
+    # Save the final DataFrame to a CSV file
+    final_df.to_csv(output, index=False)
+    return final_df

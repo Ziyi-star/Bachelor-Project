@@ -13,7 +13,6 @@ def combine_activities(df_one, df_two, output_path):
     # cross ramp down
     activity_three = df_two[(df_two['curb_activity'] == 1.0) & (df_two['curb_type_down'] == 2.0)]
     # Combine the selected data
-    #df_combined = pd.concat([activity_one, activity_two,activity_three], ignore_index=True)
     df_combined = pd.concat([activity_one,activity_three], ignore_index=True)
     # Sort by timestamp and reset index
     df_combined = df_combined.sort_values('NTP').reset_index(drop=True)
@@ -164,5 +163,29 @@ def down_sampling(data, frequency):
     # print('after sampling',sampled_data.shape)
 
     return sampled_data
+
+def process_curb_height(df):
+    """
+    Process curb height data and create a new column with height values based on conditions.
+    Args:
+        df (pd.DataFrame): Input DataFrame containing curb activity data
+        
+    Returns:
+        pd.DataFrame: DataFrame with processed curb height data and filtered columns
+    """
+    # Create a new column for curb height
+    df['curb_height'] = 0.0  # Initialize with default value
+    # Situation 1: cross curb down
+    mask_curb_down = (df['curb_scene'] == 1.0) & (df['curb_activity'] == 1.0) & (df['curb_type_down'] == 1.0)
+    df.loc[mask_curb_down, 'curb_height'] = df.loc[mask_curb_down, 'curb_height_down']
+    # Situation 2: cross ramp down
+    mask_ramp_down = (df['curb_scene'] == 1.0) & (df['curb_activity'] == 1.0) & (df['curb_type_down'] == 2.0)
+    df.loc[mask_ramp_down, 'curb_height'] = df.loc[mask_ramp_down, 'curb_height_down']
+    # Fill any missing values with 0.0
+    if df['curb_height'].isnull().any():
+        df['curb_height'] = df['curb_height'].fillna(0.0)
+    # Filter and return relevant columns
+    df_filtered = df[['NTP','Acc-Z', 'curb_scene', 'curb_height']]
+    return df_filtered
 
 
