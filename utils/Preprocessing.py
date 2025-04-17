@@ -189,3 +189,38 @@ def process_curb_height(df):
     return df_filtered
 
 
+def label_curb_scenes(df_data, df_curb, window_size=100):
+    """
+    Labels curb scenes in the data and extends labels to surrounding data points.
+    
+    Args:
+        df_data (pd.DataFrame): Original dataframe containing NTP and Acc-Z data
+        df_curb (pd.DataFrame): Dataframe containing curb timestamps
+        window_size (int): Number of data points to label before and after each curb scene
+        
+    Returns:
+        pd.DataFrame: DataFrame with labeled curb scenes
+    """
+    # Create copy with selected columns
+    df_selected = df_data[['NTP', 'Acc-Z']].copy()
+    df_selected['curb_scene'] = 0
+    
+    # Convert NTP columns to datetime
+    df_selected['NTP'] = pd.to_datetime(df_selected['NTP'])
+    df_curb['NTP'] = pd.to_datetime(df_curb['NTP'])
+    
+    # Find matching timestamps and label curb scenes
+    df_selected.loc[df_selected['NTP'].isin(df_curb['NTP']), 'curb_scene'] = 1
+    
+    # Get indices where curb_scene is 1
+    curb_indices = df_selected.index[df_selected['curb_scene'] == 1].tolist()
+    
+    # Extend labels to surrounding data points
+    for idx in curb_indices:
+        start_idx = max(0, idx - window_size)
+        end_idx = min(len(df_selected) - 1, idx + window_size)
+        df_selected.loc[start_idx:end_idx, 'curb_scene'] = 1
+    
+    return df_selected
+
+
