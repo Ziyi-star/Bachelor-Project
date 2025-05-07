@@ -180,14 +180,13 @@ def process_curb_height(df):
     df.loc[mask_curb_down, 'curb_height'] = df.loc[mask_curb_down, 'curb_height_down']
     # Situation 2: cross ramp down
     mask_ramp_down = (df['curb_scene'] == 1.0) & (df['curb_activity'] == 1.0) & (df['curb_type_down'] == 2.0)
-    df.loc[mask_ramp_down, 'curb_height'] = df.loc[mask_ramp_down, 'curb_height_down']
+    df.loc[mask_ramp_down, 'curb_height'] = 4.0
     # Fill any missing values with 0.0
     if df['curb_height'].isnull().any():
         df['curb_height'] = df['curb_height'].fillna(0.0)
     # Filter and return relevant columns
     df_filtered = df[['NTP','Acc-Z', 'curb_scene', 'curb_height']]
     return df_filtered
-
 
 def label_curb_scenes(df_data, df_curb, window_size=100):
     """
