@@ -6,8 +6,6 @@ import tensorflow as tf
 from sklearn.metrics import confusion_matrix, classification_report
 
 
-
-
 def plot_accelerometer_data(df, name):
     """
     Plot Acc-X, Acc-Y, and Acc-Z for handlebar accelerometer data over time.
@@ -137,3 +135,71 @@ def plot_confusion_matrix(y_true, y_pred):
     print(classification_report(y_true, y_pred, 
                               target_names=['Normal (0)', 'Abnormal (1)'],
                               digits=3))
+    
+
+def plt_optimal_threshold(normal_losses, abnormal_losses):
+    """
+    Calculate and visualize optimal threshold for autoencoder/lstm using precision, recall, and F1 scores.
+    
+    Parameters:
+    -----------
+    normal_losses : tf.Tensor
+        Reconstruction losses for normal data
+    abnormal_losses : tf.Tensor
+        Reconstruction losses for abnormal data
+        
+    Returns:
+    --------
+    tuple
+        (best_threshold, best_f1_score)
+    """
+    def calculate_metrics(threshold, normal_losses, abnormal_losses):
+        normal_losses = normal_losses.numpy()
+        abnormal_losses = abnormal_losses.numpy()
+        
+        predictions_normal = (normal_losses > threshold).astype(int)
+        predictions_abnormal = (abnormal_losses > threshold).astype(int)
+        
+        tp = np.sum(predictions_abnormal == 1)
+        fp = np.sum(predictions_normal == 1)
+        fn = np.sum(predictions_abnormal == 0)
+        
+        precision = tp / (tp + fp) if (tp + fp) > 0 else 0
+        recall = tp / (tp + fn) if (tp + fn) > 0 else 0
+        f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
+        
+        return precision, recall, f1
+
+    # Generate threshold values
+    min_loss = min(np.min(normal_losses.numpy()), np.min(abnormal_losses.numpy()))
+    max_loss = max(np.max(normal_losses.numpy()), np.max(abnormal_losses.numpy()))
+    thresholds = np.linspace(min_loss, max_loss, 100)
+    
+    # Calculate metrics for each threshold
+    metrics = [calculate_metrics(t, normal_losses, abnormal_losses) for t in thresholds]
+    precisions, recalls, f1_scores = zip(*metrics)
+    
+    # Find optimal threshold
+    best_idx = np.argmax(f1_scores)
+    best_threshold = thresholds[best_idx]
+    best_f1 = f1_scores[best_idx]
+    
+    # Plotting
+    plt.figure(figsize=(12, 6))
+    plt.plot(thresholds, precisions, 'b-', label='Precision', alpha=0.7)
+    plt.plot(thresholds, recalls, 'g-', label='Recall', alpha=0.7)
+    plt.plot(thresholds, f1_scores, 'r-', label='F1 Score', linewidth=2)
+    plt.plot(best_threshold, best_f1, 'r*', markersize=15, 
+             label=f'Best F1: {best_f1:.3f} at {best_threshold:.3f}')
+    
+    plt.xlabel('Threshold Value (Reconstruction Error MAE)')
+    plt.ylabel('Score')
+    plt.grid(True, alpha=0.3)
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
+    
+    print(f"Optimal threshold (best F1 score): {best_threshold:.4f}")
+    print(f"Best F1 score: {best_f1:.4f}")
+    
+    return best_threshold, best_f1
