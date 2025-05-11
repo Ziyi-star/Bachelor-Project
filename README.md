@@ -1,4 +1,5 @@
-# Bachelor Project: Anomaly Detection Techniques for Cyclist Curb Recognition using Traditional Machine Learning und Deep Learning Techniques for Time Series Classification
+# Bachelor Project: Anomaly Detection Techniques for Cyclist Curb Recognition 
+using Traditional Machine Learning und Deep Learning Techniques for Time Series Classification
 
 ## Overview
 
