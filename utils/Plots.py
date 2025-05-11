@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.dates as mdates
 import tensorflow as tf 
+from sklearn.metrics import confusion_matrix, classification_report
+
 
 
 
@@ -95,3 +97,43 @@ def plot_anomaly_reconstruction_loss(normal_data, abnormal_data, model, threshol
     plt.show()
     
     return reconstruction_loss_np, anomaly_indices
+
+def plot_confusion_matrix(y_true, y_pred):
+    """
+    Creates and displays a confusion matrix visualization for binary classification results.
+    
+    Parameters:
+        y_true (array-like): Ground truth labels (0 for normal, 1 for abnormal)
+        y_pred (array-like): Predicted labels from the model
+    
+    Displays:
+        - Confusion matrix heatmap with color-coded cells
+        - Cell values showing counts of predictions
+        - Classification report with precision, recall, and F1-score
+    """
+    confusion_mat = confusion_matrix(y_true, y_pred)
+    
+    plt.imshow(confusion_mat, cmap=plt.cm.Blues)
+    plt.colorbar()
+    
+    # Add labels with binary classes
+    labels = ['0', '1']
+    plt.xticks([0, 1], labels)
+    plt.yticks([0, 1], labels)
+    plt.ylabel('True Label')
+    plt.xlabel('Predicted Label')
+    
+    # Add numbers to cells
+    threshold = confusion_mat.max() / 2.
+    for i in range(2):
+        for j in range(2):
+            plt.text(j, i, format(confusion_mat[i, j], 'd'),
+                    ha="center", va="center",
+                    color="white" if confusion_mat[i, j] > threshold else "black")
+    
+    plt.show()
+    
+    # Print classification report with binary labels
+    print(classification_report(y_true, y_pred, 
+                              target_names=['Normal (0)', 'Abnormal (1)'],
+                              digits=3))
