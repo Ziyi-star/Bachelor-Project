@@ -18,7 +18,6 @@ This repository was created as part of the bachelor project *Anomaly Detection T
 - `models/` – Different Models Autoencoder, LSTM Autoencoder, one class SVM
 - `notebooks/` – Jupyter notebooks for exploratory data analysis, model training, and evaluation.
 - `results/` – Evaluation Results, Plots and other visualizations  
-- `scripts/` – Python scripts  
 - `utils/` – Utility functions for this project  
 - `LICENSE` – Information about the terms of use for this repository  
 
