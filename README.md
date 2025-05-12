@@ -48,10 +48,12 @@ Navigate to the `notebooks/` directory and open the desired Jupyter notebook to 
 
 
 ## Conclusion
+}All three models showed strong capabilities in detecting curbs. In the test data validation, the LSTM Autoencoder with a low value threshold delivered the best overall performance, achieving a precision of 0.493, recall of 1.0, and an F1-score of 0.660. However, its performance during real-world validation was somewhat disappointing, with a precision of 0.70, recall of 0.75, and F1-score of 0.72. The Autoencoder with a low value threshold ranked in the middle, with test validation results of 0.384 precision, 1.0 recall, and an F1-score of 0.555. In real-world validation, it achieved a precision of 0.56, recall of 0.83, and F1-score of 0.67. The One-Class SVM consistently exhibited the weakest performance, scoring a precision of 0.33, recall of 1.0, and F1-score of 0.50 in test validation, and a precision of 0.49, recall of 0.83, and F1-score of 0.61 in the real world validation.
 
+High value of false positive of all three methods because of our goal is to detect as many anomalies as possible. While the LSTM Autoencoder excelled in the controlled testing environment, its reduced effectiveness in real world scenarios can be attributed to factors such as the lack of overlapping windowing during deployment, limited computational resources, and challenges in data labeling. The labeling process, in particular, introduced notable inconsistencies, as human generated annotations tend to carry inherent inaccuracies. Improving label quality and consistency could significantly enhance validation results. 
 
 ## Future Work
-
+It is essential to develop algorithms that effectively handle labeling inaccuracies. Additionally, incorporating additional sensor data, such as accelerations along other axes and gyroscope measurements, optimizing the LSTM architecture, can further enhance the precision and reliability of the model. Thirdly, evaluating sensor placements at various positions on the bicycle could substantially improve the model's practicality.
 
 ## Acknowledgments
 
