@@ -110,6 +110,9 @@ def plot_confusion_matrix(y_true, y_pred):
         - Classification report with precision, recall, and F1-score
     """
     confusion_mat = confusion_matrix(y_true, y_pred)
+    # Convert to percentages
+    confusion_mat_percent = (confusion_mat.astype('float') / 
+                           confusion_mat.sum(axis=1)[:, np.newaxis] * 100)
     
     plt.imshow(confusion_mat, cmap=plt.cm.Blues)
     plt.colorbar()
@@ -123,11 +126,13 @@ def plot_confusion_matrix(y_true, y_pred):
     
     # Add numbers to cells
     threshold = confusion_mat.max() / 2.
+    # Add percentage values to cells
+    threshold = confusion_mat_percent.max() / 2.
     for i in range(2):
         for j in range(2):
-            plt.text(j, i, format(confusion_mat[i, j], 'd'),
+            plt.text(j, i, f'{confusion_mat_percent[i, j]:.1f}%',
                     ha="center", va="center",
-                    color="white" if confusion_mat[i, j] > threshold else "black")
+                    color="white" if i==0 and j==0 else "black")
     
     plt.show()
     
